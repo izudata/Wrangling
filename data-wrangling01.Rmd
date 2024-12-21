@@ -20,6 +20,98 @@ path <- system.file("extdata", package = "dslabs")
 To view the list of files in the dslabs use: list.files(path)
  
  
+To make the code simpler, one can move this file to one's working directory either through the file system directly or using the "file.copy()" function
+
+Using paste is not recommended
+
+You copy the file into your working dir using: file.copy(fullpath, getwd())
+
+To check if the file exists, use: file.exists(filename)
+
+To check the first three lines in a file, use: read_lines("murders.csv", n_max = 3). Before using the read_lines() function, one needs to call the tidyverse library: library(tidyverse)
+
+library(dslabs)
+library(tidyverse)    # includes readr
+library(readxl)
+
+# inspect the first 3 lines
+read_lines("murders.csv", n_max = 3)
+
+# read file in CSV format
+dat <- read_csv(filename)
+
+#read using full path
+dat <- read_csv(fullpath)
+head(dat)
+
+#Ex：
+path <- system.file("extdata", package = "dslabs")
+files <- list.files(path)
+files
+
+filename <- "murders.csv"
+filename1 <- "life-expectancy-and-fertility-two-countries-example.csv"
+filename2 <- "fertility-two-countries-example.csv"
+dat=read.csv(file.path(path, filename))
+dat1=read.csv(file.path(path, filename1))
+dat2=read.csv(file.path(path, filename2))
+ 
+
+Column Type Customization: If you need to specify or change column types explicitly (e.g., forcing a column to be a specific type), you can use the col_types argument in read_csv()
+
+dat <- read_csv(filename, col_types = cols(
+  state = col_character(),
+  abb = col_character(),
+  region = col_character(),
+  population = col_integer(),
+  total = col_integer()
+  ))
+
+Note filename has been assigned to murders.csv
+
+OR
+
+dat <- read_csv("murder.csv", col_types = cols(
+  state = col_character(),
+  abb = col_character(),
+  region = col_character(),
+  population = col_integer(),
+  total = col_integer()
+  ))
+
+
+OR
+
+dat <- read_csv(fullpath, col_types = cols(
+  state = col_character(),
+  abb = col_character(),
+  region = col_character(),
+  population = col_integer(),
+  total = col_integer()
+  ))
+
+
+A tibble is a data frame that:
+
+Has a more readable printing style (doesn’t print the entire data if it’s large).
+Avoids some common pitfalls of data frames, such as row names.
+Allows for column names to be non-standard (e.g., spaces in column names) and provides more consistency across tidyverse packages.Tibbles allow column names to contain spaces, special characters, and non-standard names without issues.
+
+Tibbles only print the first 10 rows by default, and show a summary of the columns that have more than 20 characters or complex types. This helps when working with large datasets.
+The column names are displayed without quotes, and their types are inferred.
+
+Case-insensitive match: If you're unsure about the exact casing and want to perform a case-insensitive match, you can use str_to_lower() or str_to_upper() from the stringr package to make the comparison case-insensitive.
+
+Here's how you can do it:
+
+library(dplyr)
+library(stringr)
+
+filtered_data <- dat %>%
+  filter(str_to_lower(region) == "south") %>%
+  select(state, population)
+
+
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
