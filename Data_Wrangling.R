@@ -36,3 +36,29 @@ head(filtered_data)
 
 table(filtered_data)
 View(filtered_data)
+
+
+dat2 <- read.csv(filename)
+dat2
+
+class(dat)
+class(dat2)
+
+
+url <- "https://raw.githubusercontent.com/rafalab/dslabs/master/inst/extdata/murders.csv"
+dat <- read_csv(url)
+dat
+
+
+dat <- read_csv(url, col_types = cols(
+  state = col_character(),
+  abb = col_character(),
+  region = col_character(),
+  population = col_integer(),
+  total = col_integer()
+))
+dat
+
+url2 <- "https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data"
+dat3 <- read_csv(url2, col_names = FALSE)
+head(dat3)

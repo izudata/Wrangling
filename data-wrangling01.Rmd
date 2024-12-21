@@ -107,11 +107,71 @@ Here's how you can do it:
 library(dplyr)
 library(stringr)
 
-filtered_data <- dat %>%
-  filter(str_to_lower(region) == "south") %>%
+filtered_data <- dat %>% 
+  filter(region == "South") %>% 
   select(state, population)
 
 
+R-base import functions (read.csv(), read.table(), read.delim()) generate data frames rather than tibbles.
+# read.csv to import the data
+dat2 <- read.csv(filename)
+class(dat2$abb)
+class(dat2$region)
+
+#### Full Example of a Correct Setup
+
+```markdown
+# Load libraries
+```{r setup, include=FALSE}
+library(dplyr)
+```
+# Load the dataset (assuming it exists in the path provided)
+dat <- read.csv("E:\Data_Wrangling\Wrangling\murders.csv")  # Make sure to adjust the file path
+
+
+
+# Create the `filtered_data` object
+
+```{r create_filtered_data}
+dat <- read.csv("E:/Data_Wrangling/Wrangling/murders.csv")
+filtered_data <- dat %>% 
+  filter(region == "South") %>% 
+  select(state, population)
+```
+
+
+```{r filtered_data}
+summary(filtered_data,echo = TRUE)
+```
+
+### Explanation:
+
+- **`{r filtered_data}`**: This is the code chunk header. 
+  - `r` tells R Markdown that this is an R code chunk.
+  - `filtered_data` is the optional name of the chunk. This name can be used for referencing or organizing chunks, but it's not necessary for the code to run correctly. You can leave it as just `{r}` if you prefer.
+  
+- **`summary(filtered_data)`**: This is the R code that will be executed inside the code chunk.
+
+### Example in R Markdown:
+
+```markdown
+# My Analysis
+
+
+When you knit the R Markdown file, it will execute the code inside the chunk and display the output directly in the document.
+
+### Additional Notes:
+
+1. **Chunk Options**: You can add chunk options to control how the output is displayed. For example:
+   
+   ```r
+   ```{r filtered_data, echo=TRUE, message=FALSE, warning=FALSE}
+   summary(filtered_data)
+
+
+
+
+### R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
@@ -130,3 +190,28 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+url2 <- "https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data"
+dat3 <- read_csv(url2, col_names = FALSE)
+head(dat3)
+there is no header. The col_names=FALSE argument is necessary.
+
+number of row and columns
+
+url3 <- "https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data"
+df3 <- read_csv(url, col_names = FALSE)
+nrow(df3)
+ncol(df3)
+
+
+In the Tidy Data section, you will learn how to convert data from a raw to a tidy format.
+
+This section is divided into three parts: Reshaping Data, Combining Tables, and Web Scraping. There are comprehension checks at the end of each part.
+
+After completing the Tidy Data section, you will be able to:
+
+Reshape data using functions from the tidyr package, including gather(), spread(), separate() and unite().
+Combine information from different tables using join functions from the dplyr package.
+Combine information from different tables using binding functions from the dplyr package.
+Use set operators to combine data frames.
+Gather data from a website through web scraping and use of CSS selectors.
