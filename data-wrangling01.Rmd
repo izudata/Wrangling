@@ -10,6 +10,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## R Markdown
+ 
+To use external files such as the ones in the dslabs database, one needs to download and install the dslabs package using the command: install.packages("dslabs")
+
+After installing the package, you may assign it to an object, for example: path
+
+path <- system.file("extdata", package = "dslabs")
+
+To view the list of files in the dslabs use: list.files(path)
+ 
+ 
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
