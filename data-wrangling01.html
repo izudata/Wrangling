@@ -427,16 +427,69 @@ str_to_upper() from the stringr package to make the comparison
 case-insensitive.</p>
 <p>Here’s how you can do it:</p>
 <p>library(dplyr) library(stringr)</p>
-<p>filtered_data &lt;- dat %&gt;% filter(str_to_lower(region) ==
-“south”) %&gt;% select(state, population)</p>
-<p>This is an R Markdown document. Markdown is a simple formatting
-syntax for authoring HTML, PDF, and MS Word documents. For more details
-on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be
-generated that includes both content as well as the output of any
-embedded R code chunks within the document. You can embed an R code
-chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
+<p>filtered_data &lt;- dat %&gt;% filter(region == “South”) %&gt;%
+select(state, population)</p>
+<p>R-base import functions (read.csv(), read.table(), read.delim())
+generate data frames rather than tibbles. # read.csv to import the data
+dat2 &lt;- read.csv(filename) class(dat2<span class="math inline">\(abb)
+class(dat2\)</span>region)</p>
+<div id="full-example-of-a-correct-setup" class="section level4">
+<h4>Full Example of a Correct Setup</h4>
+<pre class="markdown"><code># Load libraries
+{r setup, include=FALSE}
+library(dplyr)
+
+# Load the dataset (assuming it exists in the path provided)
+dat &lt;- read.csv(&quot;E:\Data_Wrangling\Wrangling\murders.csv&quot;)  # Make sure to adjust the file path
+
+
+
+# Create the `filtered_data` object
+
+dat &lt;- read.csv(&quot;E:/Data_Wrangling/Wrangling/murders.csv&quot;)
+filtered_data &lt;- dat %&gt;% 
+  filter(region == &quot;South&quot;) %&gt;% 
+  select(state, population)
+
+
+summary(filtered_data)
+
+
+### Explanation:
+
+- **`{r filtered_data}`**: This is the code chunk header. 
+  - `r` tells R Markdown that this is an R code chunk.
+  - `filtered_data` is the optional name of the chunk. This name can be used for referencing or organizing chunks, but it&#39;s not necessary for the code to run correctly. You can leave it as just `{r}` if you prefer.
+  
+- **`summary(filtered_data)`**: This is the R code that will be executed inside the code chunk.
+### Additional Notes:
+
+1. **Chunk Options**: You can add chunk options to control how the output is displayed. 
+   
+ {r filtered_data, echo=TRUE, message=FALSE, warning=FALSE}
+   summary(filtered_data) 
+
+### Example in R Markdown:
+markdown
+# My Analysis
+
+
+When you knit the R Markdown file, it will execute the code inside the chunk and display the output directly in the document.
+
+
+
+
+
+
+### R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see &lt;http://rmarkdown.rstudio.com&gt;.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```r
+summary(cars)</code></pre>
 <pre><code>##      speed           dist       
 ##  Min.   : 4.0   Min.   :  2.00  
 ##  1st Qu.:12.0   1st Qu.: 26.00  
@@ -444,6 +497,7 @@ chunk like this:</p>
 ##  Mean   :15.4   Mean   : 42.98  
 ##  3rd Qu.:19.0   3rd Qu.: 56.00  
 ##  Max.   :25.0   Max.   :120.00</code></pre>
+</div>
 <div id="including-plots" class="section level2">
 <h2>Including Plots</h2>
 <p>You can also embed plots, for example:</p>
@@ -451,6 +505,24 @@ chunk like this:</p>
 <p>Note that the <code>echo = FALSE</code> parameter was added to the
 code chunk to prevent printing of the R code that generated the
 plot.</p>
+<p>url2 &lt;- “<a href="https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data" class="uri">https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data</a>”
+dat3 &lt;- read_csv(url2, col_names = FALSE) head(dat3) there is no
+header. The col_names=FALSE argument is necessary.</p>
+<p>number of row and columns</p>
+<p>url3 &lt;- “<a href="https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data" class="uri">https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data</a>”
+df3 &lt;- read_csv(url, col_names = FALSE) nrow(df3) ncol(df3)</p>
+<p>In the Tidy Data section, you will learn how to convert data from a
+raw to a tidy format.</p>
+<p>This section is divided into three parts: Reshaping Data, Combining
+Tables, and Web Scraping. There are comprehension checks at the end of
+each part.</p>
+<p>###After completing the Tidy Data section, you will be able to:</p>
+<p>Reshape data using functions from the tidyr package, including
+gather(), spread(), separate() and unite(). Combine information from
+different tables using join functions from the dplyr package. Combine
+information from different tables using binding functions from the dplyr
+package. Use set operators to combine data frames. Gather data from a
+website through web scraping and use of CSS selectors.</p>
 </div>
 </div>
 

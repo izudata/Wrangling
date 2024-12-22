@@ -122,9 +122,9 @@ class(dat2$region)
 
 ```markdown
 # Load libraries
-```{r setup, include=FALSE}
+{r setup, include=FALSE}
 library(dplyr)
-```
+
 # Load the dataset (assuming it exists in the path provided)
 dat <- read.csv("E:\Data_Wrangling\Wrangling\murders.csv")  # Make sure to adjust the file path
 
@@ -132,17 +132,14 @@ dat <- read.csv("E:\Data_Wrangling\Wrangling\murders.csv")  # Make sure to adjus
 
 # Create the `filtered_data` object
 
-```{r create_filtered_data}
 dat <- read.csv("E:/Data_Wrangling/Wrangling/murders.csv")
 filtered_data <- dat %>% 
   filter(region == "South") %>% 
   select(state, population)
-```
 
 
-```{r filtered_data}
-summary(filtered_data,echo = TRUE)
-```
+summary(filtered_data)
+
 
 ### Explanation:
 
@@ -151,22 +148,21 @@ summary(filtered_data,echo = TRUE)
   - `filtered_data` is the optional name of the chunk. This name can be used for referencing or organizing chunks, but it's not necessary for the code to run correctly. You can leave it as just `{r}` if you prefer.
   
 - **`summary(filtered_data)`**: This is the R code that will be executed inside the code chunk.
+### Additional Notes:
+
+1. **Chunk Options**: You can add chunk options to control how the output is displayed. 
+   
+ {r filtered_data, echo=TRUE, message=FALSE, warning=FALSE}
+   summary(filtered_data) 
 
 ### Example in R Markdown:
-
-```markdown
+markdown
 # My Analysis
 
 
 When you knit the R Markdown file, it will execute the code inside the chunk and display the output directly in the document.
 
-### Additional Notes:
 
-1. **Chunk Options**: You can add chunk options to control how the output is displayed. For example:
-   
-   ```r
-   ```{r filtered_data, echo=TRUE, message=FALSE, warning=FALSE}
-   summary(filtered_data)
 
 
 
@@ -208,10 +204,13 @@ In the Tidy Data section, you will learn how to convert data from a raw to a tid
 
 This section is divided into three parts: Reshaping Data, Combining Tables, and Web Scraping. There are comprehension checks at the end of each part.
 
-After completing the Tidy Data section, you will be able to:
+###After completing the Tidy Data section, you will be able to:
 
 Reshape data using functions from the tidyr package, including gather(), spread(), separate() and unite().
 Combine information from different tables using join functions from the dplyr package.
 Combine information from different tables using binding functions from the dplyr package.
 Use set operators to combine data frames.
 Gather data from a website through web scraping and use of CSS selectors.
+
+
+
