@@ -204,7 +204,7 @@ In the Tidy Data section, you will learn how to convert data from a raw to a tid
 
 This section is divided into three parts: Reshaping Data, Combining Tables, and Web Scraping. There are comprehension checks at the end of each part.
 
-###After completing the Tidy Data section, you will be able to:
+### After completing the Tidy Data section, you will be able to:
 
 Reshape data using functions from the tidyr package, including gather(), spread(), separate() and unite().
 Combine information from different tables using join functions from the dplyr package.
@@ -213,4 +213,30 @@ Use set operators to combine data frames.
 Gather data from a website through web scraping and use of CSS selectors.
 
 
+# data "gapmider'" from dslabs:
+
+library(tidyverse)
+library(dslabs)
+data("gapminder")
+
+the data "gapminder" should not be confused with the library(gapminder)
+
+# create and inspect a tidy data frame
+tidy_data <- gapminder %>% 
+  filter(country %in% c("South Korea", "Germany")) %>%
+  select(country, year, fertility)
+head(tidy_data)
+
+# plotting tidy data:
+tidy_data %>% 
+  ggplot(aes(year, fertility, color = country)) +
+  geom_point()
+  
+aes stands for aesthetic mapping. Aesthetic mappings describe how variables in the data are mapped to visual properties (aesthetics) of geoms. Aesthetic mappings can be set in ggplot() and in individual layers
+
+# import and inspect example of original Gapminder data in wide format
+path <- system.file("extdata", package="dslabs")
+filename <- file.path(path,  "fertility-two-countries-example.csv")
+wide_data <- read_csv(filename)
+select(wide_data, country, `1960`:`1967`)
 

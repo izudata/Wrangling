@@ -516,7 +516,8 @@ raw to a tidy format.</p>
 <p>This section is divided into three parts: Reshaping Data, Combining
 Tables, and Web Scraping. There are comprehension checks at the end of
 each part.</p>
-<p>###After completing the Tidy Data section, you will be able to:</p>
+<div id="after-completing-the-tidy-data-section-you-will-be-able-to" class="section level3">
+<h3>After completing the Tidy Data section, you will be able to:</h3>
 <p>Reshape data using functions from the tidyr package, including
 gather(), spread(), separate() and unite(). Combine information from
 different tables using join functions from the dplyr package. Combine
@@ -524,6 +525,35 @@ information from different tables using binding functions from the dplyr
 package. Use set operators to combine data frames. Gather data from a
 website through web scraping and use of CSS selectors.</p>
 </div>
+</div>
+</div>
+<div id="data-gapmider-from-dslabs" class="section level1">
+<h1>data “gapmider’” from dslabs:</h1>
+<p>library(tidyverse) library(dslabs) data(“gapminder”)</p>
+<p>the data “gapminder” should not be confused with the
+library(gapminder)</p>
+</div>
+<div id="create-and-inspect-a-tidy-data-frame" class="section level1">
+<h1>create and inspect a tidy data frame</h1>
+<p>tidy_data &lt;- gapminder %&gt;% filter(country %in% c(“South Korea”,
+“Germany”)) %&gt;% select(country, year, fertility) head(tidy_data)</p>
+</div>
+<div id="plotting-tidy-data" class="section level1">
+<h1>plotting tidy data:</h1>
+<p>tidy_data %&gt;% ggplot(aes(year, fertility, color = country)) +
+geom_point()</p>
+<p>aes stands for aesthetic mapping. Aesthetic mappings describe how
+variables in the data are mapped to visual properties (aesthetics) of
+geoms. Aesthetic mappings can be set in ggplot() and in individual
+layers</p>
+</div>
+<div id="import-and-inspect-example-of-original-gapminder-data-in-wide-format" class="section level1">
+<h1>import and inspect example of original Gapminder data in wide
+format</h1>
+<p>path &lt;- system.file(“extdata”, package=“dslabs”) filename &lt;-
+file.path(path, “fertility-two-countries-example.csv”) wide_data &lt;-
+read_csv(filename) select(wide_data, country,
+<code>1960</code>:<code>1967</code>)</p>
 </div>
 
 

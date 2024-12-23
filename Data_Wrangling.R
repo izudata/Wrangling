@@ -61,4 +61,23 @@ dat
 
 url2 <- "https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data"
 dat3 <- read_csv(url2, col_names = FALSE)
-head(dat3)
+ head(dat3)
+dat3
+
+
+
+library(tidyverse)
+library(dslabs)
+data("gapminder")
+
+glimpse(gapminder)
+
+tidy_data <- gapminder %>% 
+  filter(country %in% c("South Korea", "Germany")) %>% 
+  select(country, year, fertility)
+head(tidy_data)
+
+
+tidy_data %>% 
+  ggplot(aes(year, fertility, colour = country)) +
+  geom_point()
