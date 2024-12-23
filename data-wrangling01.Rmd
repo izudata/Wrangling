@@ -240,3 +240,61 @@ filename <- file.path(path,  "fertility-two-countries-example.csv")
 wide_data <- read_csv(filename)
 select(wide_data, country, `1960`:`1967`)
 
+use this:
+path2 <- system.file("extdata", package = "dslabs")
+originalfilename <- file.path(path2, "fertility-two-countries-example.csv")
+wide_data <- read_csv(originalfilename, col_types = cols(
+  .default = col_double(),
+  country = col_character()
+))
+
+
+wide_data %>% 
+  select (country, '1960':'1967')
+  
+  
+  
+wide format is equivalent to unpivoted. In wide format, each row includes several observations and one of the variables is stored in the header.
+
+
+## pivoting data
+
+After importing data, a common next step is to reshape the data into a form useful for the rest of the analysis by tidying it. The tidyr package includes several useful functions for tidying data.
+The pivot_longer() function converts wide data into tidy data.
+The first argument of pivot_longer() is the data frame to be reshaped. The second argument specifies the columns containing the values to be moved into a single column.
+The new column of values is called **value** by default and the column containing the original names of those columns is called **name** by default.
+The values_to and names_to arguments can be used to change the default names of these columns.
+
+# example dataset: fertility data in wide format 
+library(tidyverse) 
+library(dslabs)
+path <- system.file("extdata", package="dslabs")
+filename <- file.path(path, "fertility-two-countries-example.csv")
+wide_data <- read_csv(filename)
+
+# snippet of wide data
+wide_data %>% select(country, '1960':'1965')
+
+# move the values in the columns 1960 through 2015 into a single column
+wide_data %>% pivot_longer(`1960`:`2015`)
+
+# another way to do this (since only country isn't being pivoted):
+wide_data %>% pivot_longer(-country)
+
+# change the default column names
+new_tidy_data <- wide_data %>% 
+  pivot_longer(-country, names_to = "year", values_to = "fertility")
+head(new_tidy_data)
+
+# compare the class from our original tidy data (year is an integer) and in the new version (year is a character)
+class(tidy_data$year)
+class(new_tidy_data$year)
+
+# use the names_transform argument to change the class of the year values to numeric
+new_tidy_data <- wide_data %>% 
+  pivot_longer(-country, names_to = "year", values_to = "fertility", 
+               names_transform = list(year=as.numeric))
+               
+# plot the data as before
+new_tidy_data %>% ggplot(aes(year, fertility, color = country)) +
+  geom_point()

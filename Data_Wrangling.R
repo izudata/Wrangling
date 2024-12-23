@@ -81,3 +81,41 @@ head(tidy_data)
 tidy_data %>% 
   ggplot(aes(year, fertility, colour = country)) +
   geom_point()
+
+
+path2 <- system.file("extdata", package = "dslabs")
+originalfilename <- file.path(path2, "fertility-two-countries-example.csv")
+wide_data <- read_csv(originalfilename, col_types = cols(
+  .default = col_double(),
+  country = col_character()
+))
+
+
+wide_data %>% 
+  select (country, '1960':'1967')
+
+
+wide_data %>% pivot_longer('1960':'2015')
+
+
+wide_data %>% pivot_longer(-country)
+
+
+new_tidy_data <- wide_data %>% 
+  pivot_longer(-country, names_to = "year", values_to = "fertility")
+head(new_tidy_data)
+
+class(tidy_data$year)
+class(new_tidy_data$year)
+
+new_tidy_data <- wide_data %>% 
+  pivot_longer(-country, names_to = "year", values_to = "fertility",
+               names_transform = list(year=as.numeric))
+head(new_tidy_data)
+
+class(new_tidy_data$year)
+
+
+new_tidy_data %>% 
+  ggplot(aes(year, fertility, colour = country)) +
+  geom_point()

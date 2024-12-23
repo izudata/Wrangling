@@ -554,6 +554,73 @@ format</h1>
 file.path(path, “fertility-two-countries-example.csv”) wide_data &lt;-
 read_csv(filename) select(wide_data, country,
 <code>1960</code>:<code>1967</code>)</p>
+<p>use this: path2 &lt;- system.file(“extdata”, package = “dslabs”)
+originalfilename &lt;- file.path(path2,
+“fertility-two-countries-example.csv”) wide_data &lt;-
+read_csv(originalfilename, col_types = cols( .default = col_double(),
+country = col_character() ))</p>
+<p>wide_data %&gt;% select (country, ‘1960’:‘1967’)</p>
+<p>wide format is equivalent to unpivoted. In wide format, each row
+includes several observations and one of the variables is stored in the
+header.</p>
+<div id="pivoting-data" class="section level2">
+<h2>pivoting data</h2>
+<p>After importing data, a common next step is to reshape the data into
+a form useful for the rest of the analysis by tidying it. The tidyr
+package includes several useful functions for tidying data. The
+pivot_longer() function converts wide data into tidy data. The first
+argument of pivot_longer() is the data frame to be reshaped. The second
+argument specifies the columns containing the values to be moved into a
+single column. The new column of values is called <strong>value</strong>
+by default and the column containing the original names of those columns
+is called <strong>name</strong> by default. The values_to and names_to
+arguments can be used to change the default names of these columns.</p>
+</div>
+</div>
+<div id="example-dataset-fertility-data-in-wide-format" class="section level1">
+<h1>example dataset: fertility data in wide format</h1>
+<p>library(tidyverse) library(dslabs) path &lt;- system.file(“extdata”,
+package=“dslabs”) filename &lt;- file.path(path,
+“fertility-two-countries-example.csv”) wide_data &lt;-
+read_csv(filename)</p>
+</div>
+<div id="snippet-of-wide-data" class="section level1">
+<h1>snippet of wide data</h1>
+<p>wide_data %&gt;% select(country, ‘1960’:‘1965’)</p>
+</div>
+<div id="move-the-values-in-the-columns-1960-through-2015-into-a-single-column" class="section level1">
+<h1>move the values in the columns 1960 through 2015 into a single
+column</h1>
+<p>wide_data %&gt;%
+pivot_longer(<code>1960</code>:<code>2015</code>)</p>
+</div>
+<div id="another-way-to-do-this-since-only-country-isnt-being-pivoted" class="section level1">
+<h1>another way to do this (since only country isn’t being
+pivoted):</h1>
+<p>wide_data %&gt;% pivot_longer(-country)</p>
+</div>
+<div id="change-the-default-column-names" class="section level1">
+<h1>change the default column names</h1>
+<p>new_tidy_data &lt;- wide_data %&gt;% pivot_longer(-country, names_to
+= “year”, values_to = “fertility”) head(new_tidy_data)</p>
+</div>
+<div id="compare-the-class-from-our-original-tidy-data-year-is-an-integer-and-in-the-new-version-year-is-a-character" class="section level1">
+<h1>compare the class from our original tidy data (year is an integer)
+and in the new version (year is a character)</h1>
+<p>class(tidy_data<span class="math inline">\(year)
+class(new_tidy_data\)</span>year)</p>
+</div>
+<div id="use-the-names_transform-argument-to-change-the-class-of-the-year-values-to-numeric" class="section level1">
+<h1>use the names_transform argument to change the class of the year
+values to numeric</h1>
+<p>new_tidy_data &lt;- wide_data %&gt;% pivot_longer(-country, names_to
+= “year”, values_to = “fertility”, names_transform =
+list(year=as.numeric))</p>
+</div>
+<div id="plot-the-data-as-before" class="section level1">
+<h1>plot the data as before</h1>
+<p>new_tidy_data %&gt;% ggplot(aes(year, fertility, color = country)) +
+geom_point()</p>
 </div>
 
 
