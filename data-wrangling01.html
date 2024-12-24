@@ -365,7 +365,8 @@ install.packages(“dslabs”)</p>
 <p>After installing the package, you may assign it to an object, for
 example: path</p>
 <p>path &lt;- system.file(“extdata”, package = “dslabs”)</p>
-<p>To view the list of files in the dslabs use: list.files(path)</p>
+<p>To view the list of files in the dslabs use:
+<strong>list.files(path)</strong></p>
 <p>To make the code simpler, one can move this file to one’s working
 directory either through the file system directly or using the
 “file.copy()” function</p>
@@ -621,6 +622,800 @@ list(year=as.numeric))</p>
 <h1>plot the data as before</h1>
 <p>new_tidy_data %&gt;% ggplot(aes(year, fertility, color = country)) +
 geom_point()</p>
+<p>The pivot_wider() function converts tidy data into wide data, which
+can be a useful intermediate step in data tidying.It is equivalent to
+unpivot</p>
+<p>The data frame to be reshaped is the first argument in pivot_wider().
+The argument names_from tells pivot_wider() which variable will be used
+for the column names and the argument values_from tells pivot_wider()
+which variable to use to fill in the values.</p>
+</div>
+<div id="still-working-with-the-same-data-as-in-the-previous-video" class="section level1">
+<h1>still working with the same data as in the previous video</h1>
+</div>
+<div id="convert-the-tidy-data-to-wide-data" class="section level1">
+<h1>convert the tidy data to wide data</h1>
+<p>new_wide_data &lt;- new_tidy_data %&gt;% pivot_wider(names_from =
+year, values_from = fertility) select(new_wide_data, country,
+<code>1960</code>:<code>1967</code>)</p>
+<div id="separate-function" class="section level2">
+<h2>Separate function</h2>
+<p>The separate() function splits one column into two or more columns at
+a specified character that separates the variables. The separate()
+function takes three arguments (apart from the data): the name of the
+column to be separated, the names to be used for the new columns, and
+the character that separates the variables. When there is an extra
+separation, you can use extra = “merge” to merge the last two
+variables.</p>
+</div>
+</div>
+<div id="import-data" class="section level1">
+<h1>import data</h1>
+<p>path &lt;- system.file(“extdata”, package = “dslabs”) fname &lt;-
+“life-expectancy-and-fertility-two-countries-example.csv” filename &lt;-
+file.path(path, fname)</p>
+<p>raw_dat &lt;- read_csv(filename) select(raw_dat, 1:4)</p>
+</div>
+<div id="pivot-all-columns-except-country" class="section level1">
+<h1>pivot all columns except country</h1>
+<p>dat &lt;- raw_dat %&gt;% pivot_longer(-country) head(dat)
+dat$name[1:5]</p>
+</div>
+<div id="separate-on-underscores" class="section level1">
+<h1>separate on underscores</h1>
+<p>dat %&gt;% separate(name, c(“year”, “name”), sep = “_“)</p>
+</div>
+<div id="separate-on-underscores-the-default-convert-years-to-numeric" class="section level1">
+<h1>separate on underscores (the default), convert years to numeric</h1>
+<p>dat %&gt;% separate(name, c(“year”, “name”), convert = TRUE)</p>
+</div>
+<div id="split-on-all-underscores-pad-empty-cells-with-na" class="section level1">
+<h1>split on all underscores, pad empty cells with NA</h1>
+<p>dat %&gt;% separate(name, c(“year”, “name_1”, “name_2”), fill =
+“right”, convert = TRUE)</p>
+</div>
+<div id="split-on-first-underscore-but-keep-life_expectancy-merged" class="section level1">
+<h1>split on first underscore but keep life_expectancy merged</h1>
+<p>dat %&gt;% separate(name, c(“year”, “name”), sep = “_“, extra
+=”merge”, convert = TRUE)</p>
+</div>
+<div id="separate-then-create-a-new-column-for-each-variable-using-pivot_wider" class="section level1">
+<h1>separate then create a new column for each variable using
+pivot_wider</h1>
+<p>dat %&gt;% separate(name, c(“year”, “name”), sep = “_“, extra
+=”merge”, convert = TRUE) %&gt;% pivot_wider()</p>
+<div id="the-unite-function-joins-two-columns-into-one." class="section level2">
+<h2>The unite() function joins two columns into one.</h2>
+</div>
+</div>
+<div id="if-we-had-used-this-non-optimal-approach-to-separate" class="section level1">
+<h1>if we had used this non-optimal approach to separate</h1>
+<p>dat %&gt;% separate(name, c(“year”, “name_1”, “name_2”), fill =
+“right”, convert = TRUE)</p>
+</div>
+<div id="we-could-unite-the-second-and-third-columns-using-unite" class="section level1">
+<h1>we could unite the second and third columns using unite()</h1>
+<p>dat %&gt;% separate(name, c(“year”, “name_1”, “name_2”), fill =
+“right”, convert = TRUE) %&gt;% unite(variable_name, name_1, name_2,
+sep=“_“)</p>
+</div>
+<div id="spread-the-columns" class="section level1">
+<h1>spread the columns</h1>
+<p>dat %&gt;% separate(name, c(“year”, “name_1”, “name_2”), fill =
+“right”, convert = TRUE) %&gt;% unite(name, name_1, name_2, sep=“_“)
+%&gt;% spread(name, value) %&gt;% rename(fertlity = fertility_NA)</p>
+<div id="combining-tables" class="section level2">
+<h2>combining tables</h2>
+<p>Key points The join functions in the dplyr package combine two tables
+such that matching rows are together. left_join() only keeps rows that
+have information in the first table. right_join() only keeps rows that
+have information in the second table. inner_join() only keeps rows that
+have information in both tables. full_join() keeps all rows from both
+tables. semi_join() keeps the part of first table for which we have
+information in the second. anti_join() keeps the elements of the first
+table for which there is no information in the second.</p>
+</div>
+</div>
+<div id="import-us-murders-data" class="section level1">
+<h1>import US murders data</h1>
+<p>library(tidyverse) library(ggrepel) library(dslabs) ds_theme_set()
+data(murders) head(murders)</p>
+</div>
+<div id="import-us-election-results-data" class="section level1">
+<h1>import US election results data</h1>
+<p>data(polls_us_election_2016) head(results_us_election_2016)
+identical(results_us_election_2016<span class="math inline">\(state,
+murders\)</span>state)</p>
+</div>
+<div id="join-the-murders-table-and-us-election-results-table" class="section level1">
+<h1>join the murders table and US election results table</h1>
+<p>tab &lt;- left_join(murders, results_us_election_2016, by = “state”)
+head(tab)</p>
+</div>
+<div id="plot-electoral-votes-versus-population" class="section level1">
+<h1>plot electoral votes versus population</h1>
+<p>tab %&gt;% ggplot(aes(population/10^6, electoral_votes, label = abb))
++ geom_point() + geom_text_repel() + scale_x_continuous(trans = “log2”)
++ scale_y_continuous(trans = “log2”) + geom_smooth(method = “lm”, se =
+FALSE)</p>
+</div>
+<div id="make-two-smaller-tables-to-demonstrate-joins" class="section level1">
+<h1>make two smaller tables to demonstrate joins</h1>
+<p>tab1 &lt;- slice(murders, 1:6) %&gt;% select(state, population) tab1
+tab2 &lt;- slice(results_us_election_2016, c(1:3, 5, 7:8)) %&gt;%
+select(state, electoral_votes) tab2</p>
+</div>
+<div id="experiment-with-different-joins" class="section level1">
+<h1>experiment with different joins</h1>
+<p>left_join(tab1, tab2) tab1 %&gt;% left_join(tab2) tab1 %&gt;%
+right_join(tab2) inner_join(tab1, tab2) semi_join(tab1, tab2)
+anti_join(tab1, tab2)</p>
+<div id="binding-function" class="section level2">
+<h2>binding function</h2>
+<p>Unlike the join functions, the binding functions do not try to match
+by a variable, but rather just combine datasets. bind_cols() binds two
+objects by making them columns in a tibble. The R-base function cbind()
+binds columns but makes a data frame or matrix instead. The bind_rows()
+function is similar but binds rows instead of columns. The R-base
+function rbind() binds rows but makes a data frame or matrix
+instead.</p>
+<p>bind_cols(a = 1:3, b = 4:6)</p>
+<p>tab1 &lt;- tab[, 1:3] tab2 &lt;- tab[, 4:6] tab3 &lt;- tab[, 7:9]
+new_tab &lt;- bind_cols(tab1, tab2, tab3) head(new_tab)</p>
+<p>tab1 &lt;- tab[1:2,] tab2 &lt;- tab[3:4,] bind_rows(tab1, tab2)</p>
+</div>
+<div id="set-operators" class="section level2">
+<h2>set operators</h2>
+<p>By default, the set operators in R-base work on vectors. If
+tidyverse/dplyr are loaded, they also work on data frames. You can take
+intersections of vectors using intersect(). This returns the elements
+common to both sets. You can take the union of vectors using union().
+This returns the elements that are in either set. The set difference
+between a first and second argument can be obtained with setdiff(). Note
+that this function is not symmetric. The function set_equal() tells us
+if two sets are the same, regardless of the order of elements.</p>
+</div>
+</div>
+<div id="intersect-vectors-or-data-frames" class="section level1">
+<h1>intersect vectors or data frames</h1>
+<p>intersect(1:10, 6:15) intersect(c(“a”,“b”,“c”), c(“b”,“c”,“d”)) tab1
+&lt;- tab[1:5,] tab2 &lt;- tab[3:7,] intersect(tab1, tab2)</p>
+</div>
+<div id="perform-a-union-of-vectors-or-data-frames" class="section level1">
+<h1>perform a union of vectors or data frames</h1>
+<p>union(1:10, 6:15) union(c(“a”,“b”,“c”), c(“b”,“c”,“d”)) tab1 &lt;-
+tab[1:5,] tab2 &lt;- tab[3:7,] union(tab1, tab2)</p>
+</div>
+<div id="set-difference-of-vectors-or-data-frames" class="section level1">
+<h1>set difference of vectors or data frames</h1>
+<p>setdiff(1:10, 6:15) setdiff(6:15, 1:10) tab1 &lt;- tab[1:5,] tab2
+&lt;- tab[3:7,] setdiff(tab1, tab2)</p>
+</div>
+<div id="setequal-determines-whether-sets-have-the-same-elements-regardless-of-order" class="section level1">
+<h1>setequal determines whether sets have the same elements, regardless
+of order</h1>
+<p>setequal(1:5, 1:6) setequal(1:5, 5:1) setequal(tab1, tab2)</p>
+<div id="web-scraping" class="section level2">
+<h2>web scraping</h2>
+<p>Web scraping is extracting data from a website.</p>
+<p>The rvest web harvesting package includes functions to extract nodes
+of an HTML document: html_nodes() extracts all nodes of different types,
+and html_node() extracts the first node.</p>
+<p>html_table() converts an HTML table to a data frame.</p>
+</div>
+</div>
+<div id="import-a-webpage-into-r" class="section level1">
+<h1>import a webpage into R</h1>
+<p>library(rvest) url &lt;- “<a href="https://en.wikipedia.org/wiki/Murder_in_the_United_States_by_state" class="uri">https://en.wikipedia.org/wiki/Murder_in_the_United_States_by_state</a>”
+h &lt;- read_html(url) class(h) h</p>
+<p>tab &lt;- h %&gt;% html_nodes(“table”) tab &lt;- tab[[2]]</p>
+<p>tab &lt;- tab %&gt;% html_table class(tab)</p>
+<p>tab &lt;- tab %&gt;% setNames(c(“state”, “population”, “total”,
+“murders”, “gun_murders”, “gun_ownership”, “total_rate”, “murder_rate”,
+“gun_murder_rate”)) head(tab)</p>
+<div id="string-processing" class="section level2">
+<h2>string processing</h2>
+<p>Remove unwanted characters from text. Extract numeric values from
+text. Find and replace characters. Extract specific parts of strings.
+Convert free form text into more uniform formats. Split strings into
+multiple values. Use regular expressions (regex) to process strings.</p>
+</div>
+<div id="key-points" class="section level2">
+<h2>key points</h2>
+<p>The most common tasks in string processing include: extracting
+numbers from strings removing unwanted characters from text finding and
+replacing characters extracting specific parts of strings converting
+free form text to more uniform formats splitting strings into multiple
+values</p>
+<p>The stringr package in the tidyverse contains string processing
+functions that follow a similar naming format (str_functionname) and are
+compatible with the pipe.</p>
+</div>
+</div>
+<div id="read-in-raw-murders-data-from-wikipedia" class="section level1">
+<h1>read in raw murders data from Wikipedia</h1>
+<p>url &lt;- “<a href="https://en.wikipedia.org/w/index.php?title=Gun_violence_in_the_United_States_by_state&amp;direction=prev&amp;oldid=810166167" class="uri">https://en.wikipedia.org/w/index.php?title=Gun_violence_in_the_United_States_by_state&amp;direction=prev&amp;oldid=810166167</a>”
+murders_raw &lt;- read_html(url) %&gt;% html_nodes(“table”) %&gt;%
+html_table() %&gt;% .[[1]] %&gt;% setNames(c(“state”, “population”,
+“total”, “murder_rate”))</p>
+</div>
+<div id="inspect-data-and-column-classes" class="section level1">
+<h1>inspect data and column classes</h1>
+<p>head(murders_raw) class(murders_raw<span class="math inline">\(population)
+class(murders_raw\)</span>total)</p>
+<div id="defining-string" class="section level2">
+<h2>defining string</h2>
+<p>Define a string by surrounding text with either single quotes or
+double quotes. To include a single quote inside a string, use double
+quotes on the outside. To include a double quote inside a string, use
+single quotes on the outside. The cat() function displays a string as it
+is represented inside R. To include a double quote inside of a string
+surrounded by double quotes, use the backslash () to escape the double
+quote. Escape a single quote to include it inside of a string defined by
+single quotes.</p>
+<p>s &lt;- “Hello!” # double quotes define a string s &lt;- ‘Hello!’ #
+single quotes define a string s &lt;- <code>Hello</code> # backquotes do
+not</p>
+<p>s &lt;- “10”” # error - unclosed quotes s &lt;- ‘10”’ # correct</p>
+</div>
+</div>
+<div id="cat-shows-what-the-string-actually-looks-like-inside-r" class="section level1">
+<h1>cat shows what the string actually looks like inside R</h1>
+<p>cat(s)</p>
+<p>s &lt;- “5’” cat(s)</p>
+</div>
+<div id="to-include-both-single-and-double-quotes-in-string-escape-with" class="section level1">
+<h1>to include both single and double quotes in string, escape
+with<br />
+</h1>
+<p>s &lt;- ‘5’10”’ # error s &lt;- “5’10”” # error s &lt;- ‘5&#39;10”’ #
+correct cat(s) s &lt;- “5’10&quot;” # correct cat(s)</p>
+<div id="string-package" class="section level2">
+<h2>string package</h2>
+<p>The main types of string processing tasks are detecting, locating,
+extracting and replacing elements of strings.</p>
+<p>The stringr package from the tidyverse includes a variety of string
+processing functions that begin with str_ and take the string as the
+first argument, which makes them compatible with the pipe.</p>
+</div>
+</div>
+<div id="murders_raw-defined-in-web-scraping-video" class="section level1">
+<h1>murders_raw defined in web scraping video</h1>
+</div>
+<div id="direct-conversion-to-numeric-fails-because-of-commas" class="section level1">
+<h1>direct conversion to numeric fails because of commas</h1>
+<p>murders_raw<span class="math inline">\(population[1:3]
+as.numeric(murders_raw\)</span>population[1:3])</p>
+<p>library(tidyverse) # includes stringr</p>
+<div id="case-study" class="section level2">
+<h2>case study</h2>
+<p>The Wikipedia page with US murder data has been updated since this
+video was created and is no longer easily converted with as.numeric()
+due to inclusion of endnote links. We will learn more string processing
+methods later that can be used to remove these endnotes.</p>
+<p>Use the str_detect() function to determine whether a string contains
+a certain pattern.</p>
+<p>Use the str_replace_all() function to replace all instances of one
+pattern with another pattern. To remove a pattern, replace with the
+empty string (““).</p>
+<p>The parse_number() function removes punctuation from strings and
+converts them to numeric.</p>
+<p>mutate_at() performs the same transformation on the specified column
+numbers.</p>
+</div>
+</div>
+<div id="murders_raw-was-defined-in-the-web-scraping-section" class="section level1">
+<h1>murders_raw was defined in the web scraping section</h1>
+</div>
+<div id="detect-whether-there-are-commas" class="section level1">
+<h1>detect whether there are commas</h1>
+<p>commas &lt;- function(x) any(str_detect(x, “,”)) murders_raw %&gt;%
+summarize_all(funs(commas))</p>
+</div>
+<div id="replace-commas-with-the-empty-string-and-convert-to-numeric" class="section level1">
+<h1>replace commas with the empty string and convert to numeric</h1>
+<p>test_1 &lt;- str_replace_all(murders_raw$population, “,”, ““) test_1
+&lt;- as.numeric(test_1)</p>
+</div>
+<div id="parse_number-also-removes-commas-and-converts-to-numeric" class="section level1">
+<h1>parse_number also removes commas and converts to numeric</h1>
+<p>test_2 &lt;- parse_number(murders_raw$population) identical(test_1,
+test_2)</p>
+<p>murders_new &lt;- murders_raw %&gt;% mutate_at(2:3, parse_number)
+murders_new %&gt;% head</p>
+<p>case study 2</p>
+<p>In the raw heights data, many students did not report their height as
+the number of inches as requested. There are many entries with real
+height information but in the wrong format, which we can extract with
+string processing. When there are both text and numeric entries in a
+column, the column will be a character vector. Converting this column to
+numeric will result in NAs for some entries. To correct problematic
+entries, look for patterns that are shared across large numbers of
+entries, then define rules that identify those patterns and use these
+rules to write string processing tasks. Use suppressWarnings() to hide
+warning messages for a function.</p>
+</div>
+<div id="load-raw-heights-data-and-inspect" class="section level1">
+<h1>load raw heights data and inspect</h1>
+<p>library(dslabs) data(reported_heights)
+class(reported_heights$height)</p>
+</div>
+<div id="convert-to-numeric-inspect-count-nas" class="section level1">
+<h1>convert to numeric, inspect, count NAs</h1>
+<p>x &lt;- as.numeric(reported_heights$height) head(x) sum(is.na(x))</p>
+</div>
+<div id="keep-only-entries-that-result-in-nas" class="section level1">
+<h1>keep only entries that result in NAs</h1>
+<p>reported_heights %&gt;% mutate(new_height = as.numeric(height))
+%&gt;% filter(is.na(new_height)) %&gt;% head(n=10)</p>
+</div>
+<div id="calculate-cutoffs-that-cover-99.999-of-human-population" class="section level1">
+<h1>calculate cutoffs that cover 99.999% of human population</h1>
+<p>alpha &lt;- 1/10^6 qnorm(1-alpha/2, 69.1, 2.9) qnorm(alpha/2, 63.7,
+2.7)</p>
+</div>
+<div id="keep-only-entries-that-either-result-in-nas-or-are-outside-the-plausible-range-of-heights" class="section level1">
+<h1>keep only entries that either result in NAs or are outside the
+plausible range of heights</h1>
+<p>not_inches &lt;- function(x, smallest = 50, tallest = 84){ inches
+&lt;- suppressWarnings(as.numeric(x)) ind &lt;- is.na(inches) | inches
+&lt; smallest | inches &gt; tallest ind }</p>
+</div>
+<div id="number-of-problematic-entries" class="section level1">
+<h1>number of problematic entries</h1>
+<p>problems &lt;- reported_heights %&gt;% filter(not_inches(height))
+%&gt;% .$height length(problems)</p>
+</div>
+<div id="examples-of-xy-or-xy-or-xy" class="section level1">
+<h1>10 examples of x’y or x’y” or x’y&quot;</h1>
+<p>pattern &lt;- “^\d\s<em>’\s</em>\d{1,2}\.<em>\d</em>’<em>&quot;</em>$”
+str_subset(problems, pattern) %&gt;% head(n=10) %&gt;% cat</p>
+</div>
+<div id="examples-of-x.y-or-xy" class="section level1">
+<h1>10 examples of x.y or x,y</h1>
+<p>pattern &lt;- “<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>\s<em>[\.|,]\s</em>([0-9]|10|11)$”
+str_subset(problems, pattern) %&gt;% head(n=10) %&gt;% cat</p>
+</div>
+<div id="examples-of-entries-in-cm-rather-than-inches" class="section level1">
+<h1>10 examples of entries in cm rather than inches</h1>
+<p>ind &lt;- which(between(suppressWarnings(as.numeric(problems))/2.54,
+54, 81) ) ind &lt;- ind[!is.na(ind)] problems[ind] %&gt;% head(n=10)
+%&gt;% cat</p>
+<div id="regex" class="section level2">
+<h2>RegEx</h2>
+</div>
+<div id="key-points-1" class="section level2">
+<h2>key points</h2>
+<p>A regular expression (regex) is a way to describe a specific pattern
+of characters of text. A set of rules has been designed to do this
+specifically and efficiently. stringr functions can take a regex as a
+pattern. str_detect() indicates whether a pattern is present in a
+string. The main difference between a regex and a regular string is that
+a regex can include special characters. The | symbol inside a regex
+means “or”. Use ‘\d’ to represent digits. The backlash is used to
+distinguish it from the character ‘d’. In R, you must use two
+backslashes for digits in regular expressions; in some other languages,
+you will only use one backslash for regex special characters. str_view()
+highlights the first occurrence of a pattern, and the str_view_all()
+function highlights all occurrences of the pattern.</p>
+</div>
+</div>
+<div id="load-stringr-through-tidyverse" class="section level1">
+<h1>load stringr through tidyverse</h1>
+<p>library(tidyverse)</p>
+</div>
+<div id="detect-whether-a-comma-is-present" class="section level1">
+<h1>detect whether a comma is present</h1>
+<p>pattern &lt;- “,” str_detect(murders_raw$total, pattern)</p>
+</div>
+<div id="show-the-subset-of-strings-including-cm" class="section level1">
+<h1>show the subset of strings including “cm”</h1>
+<p>str_subset(reported_heights$height, “cm”)</p>
+</div>
+<div id="use-the-or-symbol-inside-a-regex" class="section level1">
+<h1>use the “or” symbol inside a regex (|)</h1>
+<p>yes &lt;- c(“180 cm”, “70 inches”) no &lt;- c(“180”, “70’’”) s &lt;-
+c(yes, no) str_detect(s, “cm”) | str_detect(s, “inches”) str_detect(s,
+“cm|inches”)</p>
+</div>
+<div id="highlight-the-first-occurrence-of-a-pattern" class="section level1">
+<h1>highlight the first occurrence of a pattern</h1>
+<p>str_view(s, pattern)</p>
+</div>
+<div id="highlight-all-instances-of-a-pattern" class="section level1">
+<h1>highlight all instances of a pattern</h1>
+<p>str_view_all(s, pattern)</p>
+<div id="character-classes" class="section level2">
+<h2>character classes</h2>
+</div>
+<div id="key-points-2" class="section level2">
+<h2>key points:</h2>
+<p>Define strings to test your regular expressions, including some
+elements that match and some that do not. This allows you to check for
+the two types of errors: failing to match and matching incorrectly.
+Square brackets define character classes: groups of characters that
+count as matching the pattern. You can use ranges to define character
+classes, such as [0-9] for digits and [a-zA-Z] for all letters. Anchors
+define patterns that must start or end at specific places. ^ and $
+represent the beginning and end of the string respectively. Curly braces
+are quantifiers that state how many times a certain character can be
+repeated in the pattern. \d{1,2} matches exactly 1 or 2 consecutive
+digits.</p>
+</div>
+<div id="codes" class="section level2">
+<h2>codes:</h2>
+</div>
+</div>
+<div id="s-was-defined-in-the-previous-video" class="section level1">
+<h1>s was defined in the previous video</h1>
+<p>yes &lt;- c(“5”, “6”, “5’10”, “5 feet”, “4’11”) no &lt;- c(““,”.”,
+“Five”, “six”) s &lt;- c(yes, no) pattern &lt;- “\d”</p>
+</div>
+<div id="means-5-or-6" class="section level1">
+<h1>[56] means 5 or 6</h1>
+<p>str_view(s, “[56]”)</p>
+</div>
+<div id="means-4-5-6-or-7" class="section level1">
+<h1>[4-7] means 4, 5, 6 or 7</h1>
+<p>yes &lt;- as.character(4:7) no &lt;- as.character(1:3) s &lt;- c(yes,
+no) str_detect(s, “[4-7]”)</p>
+</div>
+<div id="means-start-of-string-means-end-of-string" class="section level1">
+<h1>^ means start of string, $ means end of string</h1>
+<p>pattern &lt;- “^\d$” yes &lt;- c(“1”, “5”, “9”) no &lt;- c(“12”,
+“123”, ” 1”, “a4”, “b”) s &lt;- c(yes, no) str_view(s, pattern)</p>
+</div>
+<div id="curly-braces-define-quantifiers-1-or-2-digits" class="section level1">
+<h1>curly braces define quantifiers: 1 or 2 digits</h1>
+<p>pattern &lt;- “^\d{1,2}$” yes &lt;- c(“1”, “5”, “9”, “12”) no &lt;-
+c(“123”, “a4”, “b”) str_view(c(yes, no), pattern)</p>
+</div>
+<div id="combining-character-class-anchors-and-quantifier" class="section level1">
+<h1>combining character class, anchors and quantifier</h1>
+<p>pattern &lt;- “<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>’\d{1,2}&quot;$” yes &lt;- c(“5’7&quot;”, “6’2&quot;”,
+“5’12&quot;”) no &lt;- c(“6,2&quot;”, “6.2&quot;”,“I am 5’11&quot;”, “3’2&quot;”, “64”)
+str_detect(yes, pattern) str_detect(no, pattern)</p>
+<div id="search-and-replace-with-regex" class="section level2">
+<h2>search and replace with RegEx</h2>
+</div>
+<div id="key-points-3" class="section level2">
+<h2>key points</h2>
+<p>str_replace() replaces the first instance of the detected pattern
+with a specified string.</p>
+<p>Spaces are characters and R does not ignore them. Spaces are
+specified by the special character \s.</p>
+<p>Additional quantifiers include <em>, + and ?. </em> means 0 or more
+instances of the previous character. ? means 0 or 1 instances. + means 1
+or more instances.</p>
+<p>Before removing characters from strings with functions like
+str_replace() and str_replace_all(), consider whether that replacement
+would have unintended effects.</p>
+</div>
+<div id="codes-1" class="section level2">
+<h2>codes:</h2>
+</div>
+</div>
+<div id="number-of-entries-matching-our-desired-pattern" class="section level1">
+<h1>number of entries matching our desired pattern</h1>
+<p>pattern &lt;- “<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>’\d{1,2}&quot;$” sum(str_detect(problems,
+pattern))</p>
+</div>
+<div id="inspect-examples-of-entries-with-problems" class="section level1">
+<h1>inspect examples of entries with problems</h1>
+<p>problems[c(2, 10, 11, 12, 15)] %&gt;% str_view(pattern)
+str_subset(problems, “inches”) str_subset(problems, “’’”)</p>
+</div>
+<div id="replace-or-remove-feetinches-words-before-matching" class="section level1">
+<h1>replace or remove feet/inches words before matching</h1>
+<p>pattern &lt;- “<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>’\d{1,2}$” problems %&gt;%
+str_replace(“feet|ft|foot”, “‘“) %&gt;% # replace feet, ft, foot with ’
+str_replace(”inches|in|’’|&quot;”, ““) %&gt;% # remove all inches symbols
+str_detect(pattern) %&gt;% sum()</p>
+</div>
+<div id="r-does-not-ignore-whitespace" class="section level1">
+<h1>R does not ignore whitespace</h1>
+<p>identical(“Hi”, “Hi”)</p>
+</div>
+<div id="s-represents-whitespace" class="section level1">
+<h1>\s represents whitespace</h1>
+<p>pattern_2 &lt;- “<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>’\s\d{1,2}&quot;$” str_subset(problems,
+pattern_2)</p>
+</div>
+<div id="means-0-or-more-instances-of-a-character" class="section level1">
+<h1>* means 0 or more instances of a character</h1>
+<p>yes &lt;- c(“AB”, “A1B”, “A11B”, “A111B”, “A1111B”) no &lt;- c(“A2B”,
+“A21B”) str_detect(yes, “A1<em>B”) str_detect(no, ”A1</em>B”)</p>
+</div>
+<div id="test-how-and-differ" class="section level1">
+<h1>test how *, ? and + differ</h1>
+<p>data.frame(string = c(“AB”, “A1B”, “A11B”, “A111B”, “A1111B”),
+none_or_more = str_detect(yes, “A1*B”), nore_or_once = str_detect(yes,
+“A1?B”), once_or_more = str_detect(yes, “A1+B”))</p>
+</div>
+<div id="update-pattern-by-adding-optional-spaces-before-and-after-feet-symbol" class="section level1">
+<h1>update pattern by adding optional spaces before and after feet
+symbol</h1>
+<p>pattern &lt;- “<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>\s<em>’\s</em>\d{1,2}$” problems %&gt;%
+str_replace(“feet|ft|foot”, “‘“) %&gt;% # replace feet, ft, foot with ’
+str_replace(”inches|in|’’|&quot;”, ““) %&gt;% # remove all inches symbols
+str_detect(pattern) %&gt;% sum()</p>
+<div id="group-with-regex" class="section level2">
+<h2>group with RegEx</h2>
+<p>Groups are defined using parentheses. Once we define groups, we can
+use the function str_match() to extract the values these groups define.
+str_extract() extracts only strings that match a pattern, not the values
+defined by groups. You can refer to the ith group with \i. For example,
+refer to the value in the second group with \2.</p>
+</div>
+<div id="codes-2" class="section level2">
+<h2>codes:</h2>
+</div>
+</div>
+<div id="define-regex-with-and-without-groups" class="section level1">
+<h1>define regex with and without groups</h1>
+<p>pattern_without_groups &lt;- “<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>,\d*<span class="math inline">\(&quot;
+pattern_with_groups &lt;-  &quot;^([4-7]),(\\d*)\)</span>”</p>
+</div>
+<div id="create-examples" class="section level1">
+<h1>create examples</h1>
+<p>yes &lt;- c(“5,9”, “5,11”, “6,”, “6,1”) no &lt;- c(“5’9”, “,”, “2,8”,
+“6.1.1”) s &lt;- c(yes, no)</p>
+</div>
+<div id="demonstrate-the-effect-of-groups" class="section level1">
+<h1>demonstrate the effect of groups</h1>
+<p>str_detect(s, pattern_without_groups) str_detect(s,
+pattern_with_groups)</p>
+</div>
+<div id="demonstrate-difference-between-str_match-and-str_extract" class="section level1">
+<h1>demonstrate difference between str_match and str_extract</h1>
+<p>str_match(s, pattern_with_groups) str_extract(s,
+pattern_with_groups)</p>
+</div>
+<div id="improve-the-pattern-to-recognize-more-events" class="section level1">
+<h1>improve the pattern to recognize more events</h1>
+<p>pattern_with_groups &lt;- “^([4-7]),(\d*)$” yes &lt;- c(“5,9”,
+“5,11”, “6,”, “6,1”) no &lt;- c(“5’9”, “,”, “2,8”, “6.1.1”) s &lt;-
+c(yes, no) str_replace(s, pattern_with_groups, “\1’\2”)</p>
+</div>
+<div id="final-pattern" class="section level1">
+<h1>final pattern</h1>
+<p>pattern_with_groups &lt;-“^([4-7])\s<em>[,\.\s+]\s</em>(\d*)$”</p>
+</div>
+<div id="combine-stringr-commands-with-the-pipe" class="section level1">
+<h1>combine stringr commands with the pipe</h1>
+<p>str_subset(problems, pattern_with_groups) %&gt;% head
+str_subset(problems, pattern_with_groups) %&gt;%
+str_replace(pattern_with_groups, “\1’\2”) %&gt;% head</p>
+<div id="testing-and-improving-with-regex" class="section level2">
+<h2>testing and improving with RegEx</h2>
+</div>
+<div id="key-points-4" class="section level2">
+<h2>key points:</h2>
+<p>Wrangling with regular expressions is often an iterative process of
+testing the approach, looking for problematic entries, and improving the
+patterns. Use the pipe to connect stringr functions. It may not be worth
+writing code to correct every unique problem in the data, but string
+processing techniques are flexible enough for most needs.</p>
+</div>
+<div id="codes-3" class="section level2">
+<h2>codes:</h2>
+</div>
+</div>
+<div id="function-to-detect-entries-with-problems" class="section level1">
+<h1>function to detect entries with problems</h1>
+<p>not_inches_or_cm &lt;- function(x, smallest = 50, tallest = 84){
+inches &lt;- suppressWarnings(as.numeric(x)) ind &lt;- !is.na(inches)
+&amp; ((inches &gt;= smallest &amp; inches &lt;= tallest) | (inches/2.54
+&gt;= smallest &amp; inches/2.54 &lt;= tallest)) !ind }</p>
+</div>
+<div id="identify-entries-with-problems" class="section level1">
+<h1>identify entries with problems</h1>
+<p>problems &lt;- reported_heights %&gt;%
+filter(not_inches_or_cm(height)) %&gt;% .$height length(problems)</p>
+<p>converted &lt;- problems %&gt;% str_replace(“feet|foot|ft”, “‘“)
+%&gt;% #convert feet symbols to ’ str_replace(”inches|in|’’|&quot;”, ““)
+%&gt;% #remove inches symbols
+str_replace(”^([4-7])\s<em>[,\.\s+]\s</em>(\d*)$“,”\1’\2”) ##change
+format</p>
+</div>
+<div id="find-proportion-of-entries-that-fit-the-pattern-after-reformatting" class="section level1">
+<h1>find proportion of entries that fit the pattern after
+reformatting</h1>
+<p>pattern &lt;- “<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>\s<em>’\s</em>\d{1,2}$” index &lt;-
+str_detect(converted, pattern) mean(index)</p>
+<p>converted[!index] # show problems</p>
+<div id="separate-with-regex" class="section level2">
+<h2>separate with RegEx</h2>
+<p>The extract() function behaves similarly to the separate() function
+but allows extraction of groups from regular expressions.</p>
+</div>
+<div id="codes-4" class="section level2">
+<h2>codes:</h2>
+</div>
+</div>
+<div id="first-example---normally-formatted-heights" class="section level1">
+<h1>first example - normally formatted heights</h1>
+<p>s &lt;- c(“5’10”, “6’1”) tab &lt;- data.frame(x = s)</p>
+</div>
+<div id="the-separate-and-extract-functions-behave-similarly" class="section level1">
+<h1>the separate and extract functions behave similarly</h1>
+<p>tab %&gt;% separate(x, c(“feet”, “inches”), sep = “’”) tab %&gt;%
+extract(x, c(“feet”, “inches”), regex = “(\d)’(\d{1,2})”)</p>
+</div>
+<div id="second-example---some-heights-with-unusual-formats" class="section level1">
+<h1>second example - some heights with unusual formats</h1>
+<p>s &lt;- c(“5’10”, “6’1&quot;”,“5’8inches”) tab &lt;- data.frame(x = s)</p>
+</div>
+<div id="separate-fails-because-it-leaves-in-extra-characters-but-extract-keeps-only-the-digits-because-of-regex-groups" class="section level1">
+<h1>separate fails because it leaves in extra characters, but extract
+keeps only the digits because of regex groups</h1>
+<p>tab %&gt;% separate(x, c(“feet”,“inches”), sep = “’”, fill = “right”)
+tab %&gt;% extract(x, c(“feet”, “inches”), regex = “(\d)’(\d{1,2})”)</p>
+<div id="splitting-strings" class="section level2">
+<h2>splitting strings</h2>
+</div>
+<div id="key-points-5" class="section level2">
+<h2>key points</h2>
+<p>The function str_split() splits a string into a character vector on a
+delimiter (such as a comma, space or underscore). By default,
+str_split() generates a list with one element for each original string.
+Use the function argument simplify=TRUE to have str_split() return a
+matrix instead. The map() function from the purrr package applies the
+same function to each element of a list. To extract the ith entry of
+each element x, use map(x, i). map() always returns a list. Use
+map_chr() to return a character vector and map_int() to return an
+integer.</p>
+</div>
+<div id="codes-5" class="section level2">
+<h2>codes</h2>
+</div>
+</div>
+<div id="read-raw-murders-data-line-by-line" class="section level1">
+<h1>read raw murders data line by line</h1>
+<p>filename &lt;- system.file(“extdata/murders.csv”, package = “dslabs”)
+lines &lt;- readLines(filename) lines %&gt;% head()</p>
+</div>
+<div id="split-at-commas-with-str_split-function-remove-row-of-column-names" class="section level1">
+<h1>split at commas with str_split function, remove row of column
+names</h1>
+<p>x &lt;- str_split(lines, “,”) x %&gt;% head() col_names &lt;- x[[1]]
+x &lt;- x[-1]</p>
+</div>
+<div id="extract-first-element-of-each-list-entry" class="section level1">
+<h1>extract first element of each list entry</h1>
+<p>library(purrr) map(x, function(y) y[1]) %&gt;% head() map(x, 1)
+%&gt;% head()</p>
+</div>
+<div id="extract-columns-1-5-as-characters-then-convert-to-proper-format---note-different-from-video" class="section level1">
+<h1>extract columns 1-5 as characters, then convert to proper format -
+NOTE: DIFFERENT FROM VIDEO</h1>
+<p>dat &lt;- data.frame(parse_guess(map_chr(x, 1)),
+parse_guess(map_chr(x, 2)), parse_guess(map_chr(x, 3)),
+parse_guess(map_chr(x, 4)), parse_guess(map_chr(x, 5))) %&gt;%
+setNames(col_names)</p>
+<p>dat %&gt;% head</p>
+</div>
+<div id="more-efficient-code-for-the-same-thing" class="section level1">
+<h1>more efficient code for the same thing</h1>
+<p>dat &lt;- x %&gt;% transpose() %&gt;% map( ~ parse_guess(unlist(.)))
+%&gt;% setNames(col_names) %&gt;% as.data.frame()</p>
+</div>
+<div id="the-simplify-argument-makes-str_split-return-a-matrix-instead-of-a-list" class="section level1">
+<h1>the simplify argument makes str_split return a matrix instead of a
+list</h1>
+<p>x &lt;- str_split(lines, “,”, simplify = TRUE) col_names &lt;- x[1,]
+x &lt;- x[-1,] x %&gt;% as_data_frame() %&gt;% setNames(col_names)
+%&gt;% mutate_all(parse_guess)</p>
+<div id="recoding" class="section level2">
+<h2>recoding</h2>
+<p>Change long factor names with the recode() function from the
+tidyverse. Other similar functions include recode_factor() and
+fct_recoder() in the forcats package in the tidyverse. The same result
+could be obtained using the case_when() function, but recode() is more
+efficient to write.</p>
+</div>
+<div id="codes-6" class="section level2">
+<h2>codes:</h2>
+</div>
+</div>
+<div id="life-expectancy-time-series-for-caribbean-countries" class="section level1">
+<h1>life expectancy time series for Caribbean countries</h1>
+<p>library(dslabs) data(“gapminder”) gapminder %&gt;%
+filter(region==“Caribbean”) %&gt;% ggplot(aes(year, life_expectancy,
+color = country)) + geom_line()</p>
+</div>
+<div id="display-long-country-names" class="section level1">
+<h1>display long country names</h1>
+<p>gapminder %&gt;% filter(region==“Caribbean”) %&gt;%
+filter(str_length(country) &gt;= 12) %&gt;% distinct(country)</p>
+</div>
+<div id="recode-long-country-names-and-remake-plot" class="section level1">
+<h1>recode long country names and remake plot</h1>
+<p>gapminder %&gt;% filter(region==“Caribbean”) %&gt;% mutate(country =
+recode(country, ‘Antigua and Barbuda’=“Barbuda”, ‘Dominican Republic’ =
+“DR”, ‘St. Vincent and the Grenadines’ = “St. Vincent”, ‘Trinidad and
+Tobago’ = “Trinidad”)) %&gt;% ggplot(aes(year, life_expectancy, color =
+country)) + geom_line()</p>
+<div id="dates-times-and-text-mining" class="section level2">
+<h2>Dates, Times, and Text Mining</h2>
+<p>Handle dates and times in R. Use the lubridate package to parse dates
+and times in different formats. Generate numerical summaries from text
+data and apply data visualization and analysis techniques to those
+data.</p>
+</div>
+<div id="key-points-6" class="section level2">
+<h2>key points</h2>
+<p>Dates are a separate data type in R.The tidyverse includes
+functionality for dealing with dates through the lubridate package.
+Extract the year, month and day from a date object with the year(),
+month() and day() functions. Parsers convert strings into dates with the
+standard YYYY-MM-DD format (ISO 8601 format). Use the parser with the
+name corresponding to the string format of year, month and day (ymd(),
+ydm(), myd(), mdy(), dmy(), dym()). Get the current time with the
+Sys.time() function. Use the now() function instead to specify a time
+zone. You can extract values from time objects with the hour(), minute()
+and second() functions. Parsers convert strings into times (for example,
+hms()). Parsers can also create combined date-time objects (for example,
+mdy_hms()).</p>
+</div>
+</div>
+<div id="inspect-the-startdate-column-of-2016-polls-data-a-date-type" class="section level1">
+<h1>inspect the startdate column of 2016 polls data, a Date type</h1>
+<p>library(tidyverse) library(dslabs) data(“polls_us_election_2016”)
+polls_us_election_2016<span class="math inline">\(startdate %&gt;% head
+class(polls_us_election_2016\)</span>startdate)
+as.numeric(polls_us_election_2016$startdate) %&gt;% head</p>
+</div>
+<div id="ggplot-is-aware-of-dates" class="section level1">
+<h1>ggplot is aware of dates</h1>
+<p>polls_us_election_2016 %&gt;% filter(pollster == “Ipsos” &amp; state
+==“U.S.”) %&gt;% ggplot(aes(startdate, rawpoll_trump)) + geom_line()</p>
+</div>
+<div id="lubridate-the-tidyverse-date-package" class="section level1">
+<h1>lubridate: the tidyverse date package</h1>
+<p>library(lubridate)</p>
+</div>
+<div id="select-some-random-dates-from-polls" class="section level1">
+<h1>select some random dates from polls</h1>
+<p>set.seed(2) dates &lt;- sample(polls_us_election_2016$startdate, 10)
+%&gt;% sort dates</p>
+</div>
+<div id="extract-month-day-year-from-date-strings" class="section level1">
+<h1>extract month, day, year from date strings</h1>
+<p>data.frame(date = dates, month = month(dates), day = day(dates), year
+= year(dates))</p>
+<p>month(dates, label = TRUE) # extract month label</p>
+</div>
+<div id="ymd-works-on-mixed-date-styles" class="section level1">
+<h1>ymd works on mixed date styles</h1>
+<p>x &lt;- c(20090101, “2009-01-02”, “2009 01 03”, “2009-1-4”, “2009-1,
+5”, “Created on 2009 1 6”, “200901 !!! 07”) ymd(x)</p>
+</div>
+<div id="different-parsers-extract-year-month-and-day-in-different-orders" class="section level1">
+<h1>different parsers extract year, month and day in different
+orders</h1>
+<p>x &lt;- “09/01/02” ymd(x) mdy(x) ydm(x) myd(x) dmy(x) dym(x)</p>
+<p>now() # current time in your time zone now(“GMT”) # current time in
+GMT now() %&gt;% hour() # current hour now() %&gt;% minute() # current
+minute now() %&gt;% second() # current second</p>
+</div>
+<div id="parse-time" class="section level1">
+<h1>parse time</h1>
+<p>x &lt;- c(“12:34:56”) hms(x)</p>
+<p>#parse datetime x &lt;- “Nov/2/2012 12:34:56” mdy_hms(x)</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>4-6<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>4-7<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>4-7<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>4-7<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>4-7<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>4-7<a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>4-7<a href="#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>4-7<a href="#fnref8" class="footnote-back">↩︎</a></p></li>
+</ol>
 </div>
 
 

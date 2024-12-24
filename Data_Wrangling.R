@@ -119,3 +119,19 @@ class(new_tidy_data$year)
 new_tidy_data %>% 
   ggplot(aes(year, fertility, colour = country)) +
   geom_point()
+
+View(new_tidy_data)
+
+
+new_tidy_data <- new_tidy_data %>% 
+  pivot_wider(names_from = year,values_from = fertility)
+select(new_tidy_data, country, '1960':'1965')
+
+
+path3 <- system.file("extdata", package = "dslabs")
+list.files(path3)
+fname <-  "life-expectancy-and-fertility-two-countries-example.csv"
+fnewpath <- file.path(path3,fname)
+file.copy(fnewpath, getwd())
+
+fname2 <- file.path(path3,fname)
