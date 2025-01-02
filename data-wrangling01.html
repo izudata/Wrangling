@@ -359,6 +359,7 @@ display: none;
 
 <div id="r-markdown" class="section level2">
 <h2>R Markdown</h2>
+<p><a href="https://github.com/rafalab/dsbook" class="uri">https://github.com/rafalab/dsbook</a></p>
 <p>To use external files such as the ones in the dslabs database, one
 needs to download and install the dslabs package using the command:
 install.packages(“dslabs”)</p>
@@ -367,6 +368,7 @@ example: path</p>
 <p>path &lt;- system.file(“extdata”, package = “dslabs”)</p>
 <p>To view the list of files in the dslabs use:
 <strong>list.files(path)</strong></p>
+<p>To view the datasets in installed packages: data()</p>
 <p>To make the code simpler, one can move this file to one’s working
 directory either through the file system directly or using the
 “file.copy()” function</p>
@@ -530,6 +532,9 @@ website through web scraping and use of CSS selectors.</p>
 </div>
 <div id="data-gapmider-from-dslabs" class="section level1">
 <h1>data “gapmider’” from dslabs:</h1>
+<blockquote>
+<p>install.packages(“dslabs”)</p>
+</blockquote>
 <p>library(tidyverse) library(dslabs) data(“gapminder”)</p>
 <p>the data “gapminder” should not be confused with the
 library(gapminder)</p>

@@ -10,6 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## R Markdown
+
+https://github.com/rafalab/dsbook
  
 To use external files such as the ones in the dslabs database, one needs to download and install the dslabs package using the command: install.packages("dslabs")
 
@@ -19,7 +21,8 @@ path <- system.file("extdata", package = "dslabs")
 
 To view the list of files in the dslabs use: **list.files(path)**
  
- 
+To view the datasets in installed packages: data()
+
 To make the code simpler, one can move this file to one's working directory either through the file system directly or using the "file.copy()" function
 
 Using paste is not recommended
@@ -214,6 +217,8 @@ Gather data from a website through web scraping and use of CSS selectors.
 
 
 # data "gapmider'" from dslabs:
+
+> install.packages("dslabs")
 
 library(tidyverse)
 library(dslabs)

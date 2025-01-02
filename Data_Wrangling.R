@@ -135,3 +135,45 @@ fnewpath <- file.path(path3,fname)
 file.copy(fnewpath, getwd())
 
 fname2 <- file.path(path3,fname)
+
+install.packages("Lahman")
+
+library(Lahman)
+
+data()
+
+glimpse(Batting)
+
+topplayer <- Batting %>% 
+  filter(yearID == 2016) %>% 
+  arrange(desc(HR)) %>% 
+  slice(1:10)
+topplayer %>% as_tibble()
+
+
+People %>% as_tibble()
+
+
+
+top_names <- topplayer %>% left_join(People) %>% 
+  select(playerID, nameFirst, nameLast, HR)
+
+top_names
+
+
+top_salary <- Salaries %>% filter(yearID == 2016) %>% 
+  right_join(top_names) %>% 
+  select(nameFirst, nameLast, teamID, HR, salary)
+top_salary
+
+
+glimpse(AwardsPlayers)
+AwardsPlayers %>% as_tibble()
+
+won_awards <- topplayer %>% filter(yearID == 2016) %>% 
+  left_join(AwardsPlayers) %>% 
+  select(playerID, awardID)
+won_awards
+
+
+setdiff(topplayer,won_awards)
